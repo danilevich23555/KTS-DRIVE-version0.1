@@ -7,6 +7,10 @@ migrate.up:
 migrate.down:
 	alembic downgrade -1
 
+docker.up:
+	docker-compose up
+
+
 
 
 
