@@ -13,6 +13,8 @@ from drive_server.app.web.response import error_json_response
 @middleware
 async def auth_middleware(request: "Request", handler: callable):
     session = await get_session(request)
+    print(session)
+    print(request)
     request.user_id = session["user"]["id"] if session else None
     print(request.user_id)
     return await handler(request)
@@ -29,33 +31,33 @@ HTTP_ERROR_CODES = {
 }
 
 
-@middleware
-async def error_handling_middleware(request: Request, handler):
-    try:
-        response = await handler(request)
-        return response
-    except HTTPUnprocessableEntity as e:
-        return error_json_response(
-            http_status=400,
-            status="bad_request",
-            message=e.reason,
-            data=json.loads(e.text),
-        )
-    except HTTPException as e:
-        return error_json_response(
-            http_status=e.status,
-            status=HTTP_ERROR_CODES[e.status],
-            message=str(e),
-        )
-    except Exception as e:
-        request.app.logger.error("Exception", exc_info=e)
-        return error_json_response(
-            http_status=500, status="internal server error", message=str(e)
-        )
+# @middleware
+# async def error_handling_middleware(request: Request, handler):
+#     try:
+#         response = await handler(request)
+#         return response
+#     except HTTPUnprocessableEntity as e:
+#         return error_json_response(
+#             http_status=400,
+#             status="bad_request",
+#             message=e.reason,
+#             data=json.loads(e.text),
+#         )
+#     except HTTPException as e:
+#         return error_json_response(
+#             http_status=e.status,
+#             status=HTTP_ERROR_CODES[e.status],
+#             message=str(e),
+#         )
+#     except Exception as e:
+#         request.app.logger.error("Exception", exc_info=e)
+#         return error_json_response(
+#             http_status=500, status="internal server error", message=str(e)
+#         )
 
 
 def setup_middlewares(app: Application):
     # TODO: добавить error_handling_middleware, validation_middleware и расставить все middleware в нужном порядке
-    app.middlewares.append(error_handling_middleware)
+    # app.middlewares.append(error_handling_middleware)
     app.middlewares.append(auth_middleware)
 

@@ -83,4 +83,4 @@ def create_app(create_coockie: int) -> Application:
 if __name__ == '__main__':
     print(f'Интерфейс S3 доступен по {settings.DSN_MINIO},'
           f' логин: {settings.MINIO_ACCESS_KEY}, пароль: {settings.MINIO_SECRET_KEY}')
-    web.run_app(create_app(0), port=8888)
+    web.run_app(create_app(1), port=8888)
